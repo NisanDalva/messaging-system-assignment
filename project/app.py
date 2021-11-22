@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from flask import Flask, jsonify, request
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Boolean, ForeignKeyConstraint
+from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Boolean, ForeignKeyConstraint, desc
 from sqlalchemy.orm import relationship
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -38,7 +38,7 @@ class User(UserMixin, db.Model):
 
 
 @dataclass
-class Message_Table(db.Model):
+class Message(db.Model):
     __tablename__ = 'message'
     __table_args__ = (ForeignKeyConstraint(['sender', 'receiver'], ['user.id', 'user.id']),)
     id: int
@@ -124,6 +124,71 @@ def logout():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+@app.route('/message/send', methods=['POST'])
+@login_required
+def send_message():
+
+    if not request.is_json:
+        return jsonify({'message': 'body must be a json , got: ' + request.get_data().decode('utf-8'),
+            'status': 400}), 400
+    
+    body = request.get_json()
+
+    if 'message' not in body or 'receiver' not in body or 'subject' not in body:
+        return jsonify({'message': 'body must be a json contains: message, receiver and subject, got: ' + str(body),
+                'status': 400}), 400
+
+    new_message = Message(sender=current_user.id,
+                            subject=body['subject'],
+                            message=body['message'],
+                            receiver=body['receiver']
+                            )
+
+    # adding to the database
+    db.session.add(new_message)
+    db.session.commit()
+    return jsonify(new_message)
+
+@app.route('/message/all', methods=['PUT'])
+@login_required
+def all_messages():
+    all_messages = Message.query.filter_by(receiver=current_user.id).all()
+
+    # mark all messages as read
+    for message in all_messages:
+        message.did_read = True
+    db.session.commit()
+
+    return jsonify(all_messages)
+
+@app.route('/message/unread', methods=['PUT'])
+@login_required
+def all_unread_messages():
+    all_messages = Message.query.filter_by(receiver=current_user.id, did_read=False).all()
+
+    # mark all messages as read
+    for message in all_messages:
+        message.did_read = True
+    db.session.commit()
+
+    return jsonify(all_messages)
+
+@app.route('/message/latest', methods=['PUT'])
+@login_required
+def get_message():
+    message = Message.query \
+                        .filter_by(receiver=current_user.id) \
+                        .order_by(desc(Message.creation_date)) \
+                        .first()
+
+    if message is None:
+        return jsonify({'message': f'could not find any message for user \'{current_user.name}\''})
+
+    message.did_read = True
+    db.session.commit()
+    return jsonify(message)
 
 
 if __name__ == "__main__":
