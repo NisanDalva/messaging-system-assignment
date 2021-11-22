@@ -126,6 +126,11 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+@app.route('/user/all', methods=['GET'])
+def get_all_users():
+    return jsonify(User.query.all())
+
+
 @app.route('/message/send', methods=['POST'])
 @login_required
 def send_message():
@@ -189,6 +194,22 @@ def get_message():
     message.did_read = True
     db.session.commit()
     return jsonify(message)
+
+
+@app.route('/user/delete/all', methods=['DELETE'])
+def delete_all_users():
+    num_users_deleted = db.session.query(User).delete()
+    db.session.commit()
+    print(num_users_deleted)
+    return ''
+
+
+@app.route('/message/delete/all', methods=['DELETE'])
+def delete_all_messages():
+    num_messages_deleted = db.session.query(Message).delete()
+    db.session.commit()
+    print(num_messages_deleted)
+    return ''
 
 
 if __name__ == "__main__":
