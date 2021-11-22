@@ -100,21 +100,29 @@ def register():
 def login(email, password):
 
     user = User.query.filter_by(email=email).first()
-    print(f'user = {user}')
 
     # check if the user is exists then take a given password, hash it and compare it to 
     # the hashed password in the database
     if not user or not check_password_hash(user.password, password):
-        return jsonify({"message": "invalid credentials"})
+        return jsonify({"message": "invalid credentials",
+                        "status": 404}), 404
 
     login_user(user)
     # returns the user means successfully loged in
     return jsonify(user)
 
 
+@app.route('/user/logout')
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message": "logout successfully",
+                    "status": 200})
+
+
+# utility function to load the user via flask login package
 @login_manager.user_loader
 def load_user(user_id):
-    # since the user_id is just the primary key of our user table, use it in the query for the user
     return User.query.get(int(user_id))
 
 
