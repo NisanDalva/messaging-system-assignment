@@ -1,3 +1,4 @@
+Root URL: ```https://messaging-assignment.herokuapp.com```  
 Here is a list of endpoints the system supports:  
 
 **Register**

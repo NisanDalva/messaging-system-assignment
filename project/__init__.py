@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from dataclasses import dataclass
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Boolean, ForeignKeyConstraint, desc
@@ -67,6 +67,11 @@ class Message(db.Model):
     sender_relationship = relationship("User", foreign_keys=[sender])
     receiver_relationship = relationship("User", foreign_keys=[receiver]) 
 
+
+@app.route('/')
+def readme():
+    return render_template('README.html')
+    
 
 @app.route('/user/register', methods=['POST'])
 def register():
