@@ -239,7 +239,7 @@ def delete_message_by_id(id):
 
 if __name__ == "__main__":
     
-    if not os.path.exists(DATABASE_NAME):
-        db.create_all()
+    # if not os.path.exists(DATABASE_NAME):
+    db.create_all()
 
     app.run(debug=True)
