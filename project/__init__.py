@@ -27,6 +27,9 @@ login_manager.init_app(app)
 def getApp():
     return app
 
+def getDb():
+    return db
+
 @dataclass
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
