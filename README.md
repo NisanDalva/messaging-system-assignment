@@ -1,4 +1,5 @@
 Here is a list of endpoints the system supports:  
+
 **Register**
 ----
 Register a new user.
@@ -18,7 +19,7 @@ Register a new user.
     ```json
     {
         "email": "[string]",
-        "id": [integer],
+        "id": "[integer]",
         "name": "[string]",
         "password": "[encrypted password]"
     }
@@ -59,7 +60,7 @@ Login an existing user.
     ```json
     {
         "email": "[string]",
-        "id": [integer],
+        "id": "[integer]",
         "name": "[string]",
         "password": "[encrypted password]"
     }
@@ -119,10 +120,10 @@ Send a message between user.
     {
         "creation_date": "[datetime]",
         "did_read": false,
-        "id": [message.id],
+        "id": "[message.id]",
         "message": "[message]",
-        "receiver": [the user.id to whom the message was sent],
-        "sender": [the user.id who sends the message],
+        "receiver": "[the user.id to whom the message was sent]",
+        "sender": "[the user.id who sends the message]",
         "subject": "[the subject]"
     }
     ```
@@ -160,19 +161,19 @@ Get all messages that **sent** to the logged in user only, and mark each message
         {
             "creation_date": "[datetime]",
             "did_read": false,
-            "id": [message.id],
+            "id": "[message.id]",
             "message": "[message]",
-            "receiver": [the user.id to whom the message was sent],
-            "sender": [the user.id who sends the message],
+            "receiver": "[the user.id to whom the message was sent]",
+            "sender": "[the user.id who sends the message]",
             "subject": "[the subject]"
         },
         {
             "creation_date": "[datetime]",
             "did_read": false,
-            "id": [message.id],
+            "id": "[message.id]",
             "message": "[message]",
-            "receiver": [the user.id to whom the message was sent],
-            "sender": [the user.id who sends the message],
+            "receiver": "[the user.id to whom the message was sent]",
+            "sender": "[the user.id who sends the message]",
             "subject": "[the subject]"
         },
         .
@@ -203,19 +204,19 @@ Get all unread messages that **sent** to the logged in user only, and mark each 
         {
             "creation_date": "[datetime]",
             "did_read": false,
-            "id": [message.id],
+            "id": "[message.id]",
             "message": "[message]",
-            "receiver": [the user.id to whom the message was sent],
-            "sender": [the user.id who sends the message],
+            "receiver": "[the user.id to whom the message was sent]",
+            "sender": "[the user.id who sends the message]",
             "subject": "[the subject]"
         },
         {
             "creation_date": "[datetime]",
             "did_read": false,
-            "id": [message.id],
+            "id": "[message.id]",
             "message": "[message]",
-            "receiver": [the user.id to whom the message was sent],
-            "sender": [the user.id who sends the message],
+            "receiver": "[the user.id to whom the message was sent]",
+            "sender": "[the user.id who sends the message]",
             "subject": "[the subject]"
         },
         .
@@ -245,10 +246,10 @@ Read only one unread message that **sent** to the logged in user only, and mark 
     {
         "creation_date": "[datetime]",
         "did_read": false,
-        "id": [message.id],
+        "id": "[message.id]",
         "message": "[message]",
-        "receiver": [the user.id to whom the message was sent],
-        "sender": [the user.id who sends the message],
+        "receiver": "[the user.id to whom the message was sent]",
+        "sender": "[the user.id who sends the message]",
         "subject": "[the subject]"
     }
     ```
