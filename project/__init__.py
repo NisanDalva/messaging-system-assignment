@@ -24,6 +24,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+def getApp():
+    return app
 
 @dataclass
 class User(UserMixin, db.Model):
