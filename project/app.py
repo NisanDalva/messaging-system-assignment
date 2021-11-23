@@ -6,6 +6,7 @@ from flask import Flask, jsonify, request
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Boolean, ForeignKeyConstraint, desc
+from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm import relationship
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,6 +18,7 @@ app = Flask(__name__)
 # read it from the environment variables
 app.config['SECRET_KEY'] = os.environ.get('SECRET')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DATABASE_NAME}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -168,7 +170,7 @@ def all_messages():
 
     return jsonify(all_messages)
 
-@app.route('/message/unread', methods=['PUT'])
+@app.route('/message/all/unread', methods=['PUT'])
 @login_required
 def all_unread_messages():
     all_messages = Message.query.filter_by(receiver=current_user.id, did_read=False).all()
@@ -211,6 +213,24 @@ def delete_all_messages():
     print(num_messages_deleted)
     return ''
 
+@app.route('/message/delete/<id>', methods=['DELETE'])
+@login_required
+def delete_message_by_id(id):
+    # should return 1 if deleted, otherwise 0
+    has_deleted = db.session.query(Message) \
+        .filter(Message.id == id) \
+        .filter(or_(Message.sender == current_user.id, Message.receiver == current_user.id)) \
+        .delete()
+    
+    db.session.commit()
+    print(has_deleted)
+    if has_deleted == 1: # successful
+        return ''
+    
+    # unsuccessful
+    return jsonify({'message': 'unable to delete the message',
+                    'status': 500}), 500
+    
 
 if __name__ == "__main__":
     
